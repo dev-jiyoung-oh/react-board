@@ -15,6 +15,7 @@ class ListBoardComponent extends Component {
     // ★this.state에 선언한 변수의 값을 변경하기 위해선 setState를 사용해야함.
     componentDidMount() {
         BoardService.getBoards().then((res) => {
+            console.log(res);
             this.setState({boards: res.data});
         });
     }
@@ -42,7 +43,7 @@ class ListBoardComponent extends Component {
                             {
                                 this.state.boards.map(
                                     board => 
-                                    <tr key = {board.no}>
+                                    <tr key ="{board.no}">
                                         <td> {board.no} </td>
                                         <td> {board.title} </td>
                                         <td> {board.memberNo} </td>
