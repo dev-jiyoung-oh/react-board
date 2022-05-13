@@ -8,6 +8,11 @@ class BoardService {
     getBoards() {
         return axios.get(BOARD_API_BASE_URL);
     }
+
+    // 글 작성
+    createBoard(board) {
+        return axios.post(BOARD_API_BASE_URL, board);
+    }
 }
 
 export default new BoardService();
