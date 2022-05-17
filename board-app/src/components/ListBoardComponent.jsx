@@ -24,10 +24,12 @@ class ListBoardComponent extends Component {
     }
 
     // 글 작성 버튼을 클릭시 글작성 페이지로 이동하게 해주는 함수를 정의
+    /*
     createBoard() {
         //const navigate = 
         //navigate('');
     }
+    */
 
     //  render() 함수의 내용이 실제 웹페이지에 표시된다. 
     // maps() 함수를 사용해서 'boards'의 데이터를 출력한다.
