@@ -5,6 +5,7 @@ import HeaderComponent from './components/HeaderComponent';
 import FooterComponent from './components/FooterComponent';
 import ListBoardComponent from './components/ListBoardComponent';
 import CreateBoardComponent from './components/CreateBoardComponent';
+import ReadBoardComponent from './components/ReadBoardComponent';
 
 // App()함수에 최상위 컴포넌트들을 정의함.
 function App() {
@@ -18,6 +19,7 @@ function App() {
                 <Route path = "/" element = {<ListBoardComponent/>}></Route>
                 <Route path = "/board" element = {<ListBoardComponent/>}></Route>
                 <Route path = "/create-board" element = {<CreateBoardComponent/>}></Route>
+                <Route path = "/read-board/:no" element = {<ReadBoardComponent/>}></Route>
               </Routes>
         </div>
         <FooterComponent/>

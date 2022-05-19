@@ -13,6 +13,11 @@ class BoardService {
     createBoard(board) {
         return axios.post(BOARD_API_BASE_URL, board);
     }
+
+    // 상세보기
+    getOneBoard(no) {
+        return axios.get(BOARD_API_BASE_URL + "/" + no);
+    }
 }
 
 export default new BoardService();
