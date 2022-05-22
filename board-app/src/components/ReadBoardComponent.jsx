@@ -1,29 +1,24 @@
-import React, { Component } from 'react';
+import React, {useState, useEffect} from 'react';
+import {useNavigate, useParams} from 'react-router-dom';
 import BoardService from '../service/BoardService';
 
-class ReadBoardComponent extends Component {
-    constructor(props) {
-        super(props);
+function ReadBoardComponent (props) {
+    const navigate = useNavigate();
+    const params = useParams();
+    const [board, setBoard] = useState({});
 
-        this.state = { 
-            no: this.props.match.params.no,
-            board: {}
-        }
-
-    }
-
-    componentDidMount() {
-        BoardService.getOneBoard(this.state.no).then( res => {
-            this.setState({board: res.data});
+    useEffect (() => {
+        BoardService.getOneBoard(params.no).then( res => {
+            setBoard(res.data);
         });
-    }
+    });
 
-    returnBoardType(typeNo) {
+    function returnBoardType(typeNo) {
         let type = null;
-        if (typeNo == 1) {
+        if (typeNo === 1) {
             type = "자유게시판";
 
-        } else if (typeNo == 2 ) {
+        } else if (typeNo === 2 ) {
             type = "질문과 답변 게시판";
 
         } else {
@@ -38,7 +33,7 @@ class ReadBoardComponent extends Component {
 
     }
 
-    returnDate(cTime, uTime) {
+    function returnDate(cTime, uTime) {
         return (
             <div className = "row">
                 <label>생성일 : [ {cTime} ] / 최종 수정일 : [ {uTime} ] </label>
@@ -46,42 +41,37 @@ class ReadBoardComponent extends Component {
         )
     }
 
-    goToList() {
-        this.props.history.push('/board');
+    function goToList() {
+        navigate('/board');
     }
 
-    render() {
-        return (
-            <div>
-                <div className = "card col-md-6 offset-md-3">
-                    <h3 className ="text-center"> Read Detail</h3>
-                    <div className = "card-body">
-                            # 5. 
-                            {this.returnBoardType(this.state.board.type)} 
-                            <div className = "row">      
-                                # 6.
-                                <label> Title </label> : {this.state.board.title}
-                            </div>
+    return (
+        <div>
+            <div className = "card col-md-6 offset-md-3">
+                <h3 className ="text-center"> Read Detail</h3>
+                <div className = "card-body">
+                        {this.returnBoardType(board.type)} 
+                        <div className = "row">   
+                            <label> Title </label> : {board.title}
+                        </div>
 
-                            <div className = "row">
-                                <label> Contents </label> : <br></br>
-                                <textarea value={this.state.board.contents} readOnly/> 
-                            </div >
+                        <div className = "row">
+                            <label> Contents </label> : <br></br>
+                            <textarea value={board.contents} readOnly/> 
+                        </div >
 
-                            <div className = "row">
-                                <label> MemberNo  </label>: 
-                                {this.state.board.memberNo}
-                            </div>
+                        <div className = "row">
+                            <label> MemberNo  </label>: 
+                            {board.memberNo}
+                        </div>
 
-                            {this.returnDate(this.state.board.createdTime, this.state.board.updatedTime) }
-                            # 7.
-                            <button className="btn btn-primary" onClick={this.goToList.bind(this)} style={{marginLeft:"10px"}}>글 목록으로 이동</button>
-                    </div>
+                        {this.returnDate(board.createdTime, board.updatedTime) }
+                        <button className="btn btn-primary" onClick={goToList} style={{marginLeft:"10px"}}>글 목록으로 이동</button>
                 </div>
-
             </div>
-        );
-    }
+
+        </div>
+    );
 }
 
 export default ReadBoardComponent;
