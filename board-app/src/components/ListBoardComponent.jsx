@@ -16,7 +16,7 @@ function ListBoardComponent(props) {
 
     // 글 작성 버튼을 클릭시 글작성 페이지로 이동하게 해주는 함수를 정의
     function createBoard() {
-        navigate('/create-board');
+        navigate('/create-board/_create');
     }
 
     // 글 제목을 클릭 했을 때 글 상세보기 페이지로 이동하게 해주는 함수를 정의

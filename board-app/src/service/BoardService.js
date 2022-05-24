@@ -14,6 +14,11 @@ class BoardService {
         return axios.post(BOARD_API_BASE_URL, board);
     }
 
+    // 
+    updateBoard(no, board) {
+        return axios.put(BOARD_API_BASE_URL + "/" + no, board);
+    }
+
     // 상세보기
     getOneBoard(no) {
         return axios.get(BOARD_API_BASE_URL + "/" + no);

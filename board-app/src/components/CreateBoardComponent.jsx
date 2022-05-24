@@ -1,14 +1,31 @@
-import React, { useState } from 'react';
+import React, {useState, useEffect} from 'react';
 import BoardService from '../service/BoardService';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
+
+var gotData = false;
 
 function CreateBoardComponent(props) {
-
     const navigate = useNavigate();
+    const params = useParams();
+
+    const [no] = useState(params.no);
     const [type, setType] = useState("1");
     const [title, setTitle] = useState("");
     const [contents, setContents] = useState("");
     const [memberNo, setMemberNo] = useState("");
+
+    if (no !== '_create' && !gotData) {
+        BoardService.getOneBoard(no).then( (res) => {
+            gotData = true;
+            let board = res.data;
+            console.log("board => "+ JSON.stringify(board));
+            
+            setType(board.type);
+            setTitle(board.title);
+            setContents(board.contents);
+            setMemberNo(board.memberNo);
+        });
+    }
 
     // 
     const changeTypeHandler = (event) => {
@@ -34,9 +51,15 @@ function CreateBoardComponent(props) {
             memberNo: memberNo
         };
         console.log("board => " + JSON.stringify(board));
-        BoardService.createBoard(board).then(res => {
-            navigate('/board');
-        });
+        if (no === '_create') {
+            BoardService.createBoard(board).then(res => {
+                navigate('/board');
+            });
+        } else {
+            BoardService.updateBoard(no, board).then(res => {
+                navigate('/board');
+            });
+        }
     }
 
     // 
@@ -45,12 +68,23 @@ function CreateBoardComponent(props) {
     }
 
     // 
+    const getTitle = () => {
+        if (no === '_create') {
+            return <h3 className="text-center">새글을 작성해주세요</h3>
+        } else {
+            return <h3 className="text-center">{no}번 게시글을 수정합니다.</h3>
+        }
+    }
+
+    // 
     return (
         <div>
             <div className="container">
                 <div className="row">
                     <div className="card col-md-6 offset-md-3 offset-md-3">
-                        <h3 className="text-center">새글을 작성해주세요</h3>
+                        {
+                            getTitle()
+                        }
                         <div className="card-body">
                             <form>
                                 <div className="form-group">
