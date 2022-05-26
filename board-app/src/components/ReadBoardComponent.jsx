@@ -10,8 +10,9 @@ function ReadBoardComponent (props) {
     useEffect (() => {
         BoardService.getOneBoard(params.no).then( res => {
             setBoard(res.data);
+            // TODO 조회수 증가
         });
-    });
+    }, []);
 
     function returnBoardType(typeNo) {
         let type = null;
@@ -49,6 +50,20 @@ function ReadBoardComponent (props) {
         navigate('/create-board/' + params.no);
     }
 
+    async function deleteView() {
+        if (window.confirm("정말로 글을 삭제하시겠습니까?\n삭제된 글은 복구 할 수 없습니다.")) {
+            BoardService.deleteBoard(params.no).then( res => {
+                console.log("delete result => "+ JSON.stringify(res));
+                if (res.status === 200) {
+                    navigate('/board');
+                } else {
+                    alert("글 삭제가 실패했습니다.");
+                }
+            });
+
+        }
+    }
+
     return (
         <div>
             <div className = "card col-md-6 offset-md-3">
@@ -69,8 +84,9 @@ function ReadBoardComponent (props) {
                         </div>
 
                         {returnDate(board.createdTime, board.updatedTime) }
-                        <button className="btn btn-primary" onClick={goToList} style={{marginLeft:"10px"}}>글 목록으로 이동</button>
+                        <button className="btn btn-primary" onClick={goToList} style={{marginLeft:"10px"}}>글 목록</button>
                         <button className="btn btn-info" onClick={goToUpdate} style={{marginLeft:"10px"}}>글 수정</button>
+                        <button className="btn btn-danger" onClick={deleteView} style={{marginLeft:"10px"}}>글 삭제</button>
                 </div>
             </div>
 

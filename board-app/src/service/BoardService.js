@@ -14,7 +14,7 @@ class BoardService {
         return axios.post(BOARD_API_BASE_URL, board);
     }
 
-    // 
+    // 글 수정
     updateBoard(no, board) {
         return axios.put(BOARD_API_BASE_URL + "/" + no, board);
     }
@@ -22,6 +22,11 @@ class BoardService {
     // 상세보기
     getOneBoard(no) {
         return axios.get(BOARD_API_BASE_URL + "/" + no);
+    }
+
+    // 글 삭제
+    deleteBoard(no) {
+        return axios.delete(BOARD_API_BASE_URL + "/" + no);
     }
 }
 

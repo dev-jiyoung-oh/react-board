@@ -2,8 +2,6 @@ import React, {useState, useEffect} from 'react';
 import BoardService from '../service/BoardService';
 import {useNavigate, useParams} from 'react-router-dom';
 
-var gotData = false;
-
 function CreateBoardComponent(props) {
     const navigate = useNavigate();
     const params = useParams();
@@ -14,18 +12,19 @@ function CreateBoardComponent(props) {
     const [contents, setContents] = useState("");
     const [memberNo, setMemberNo] = useState("");
 
-    if (no !== '_create' && !gotData) {
-        BoardService.getOneBoard(no).then( (res) => {
-            gotData = true;
-            let board = res.data;
-            console.log("board => "+ JSON.stringify(board));
-            
-            setType(board.type);
-            setTitle(board.title);
-            setContents(board.contents);
-            setMemberNo(board.memberNo);
-        });
-    }
+    useEffect (() => {
+        if (no !== '_create') {
+            BoardService.getOneBoard(no).then( (res) => {
+                let board = res.data;
+                console.log("board => "+ JSON.stringify(board));
+                
+                setType(board.type);
+                setTitle(board.title);
+                setContents(board.contents);
+                setMemberNo(board.memberNo);
+            });
+        }
+    }, []);
 
     // 
     const changeTypeHandler = (event) => {

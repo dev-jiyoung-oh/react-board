@@ -12,7 +12,7 @@ function ListBoardComponent(props) {
         BoardService.getBoards().then((res) => {
             setBoards(res.data);
         });
-    });
+    }, []);
 
     // 글 작성 버튼을 클릭시 글작성 페이지로 이동하게 해주는 함수를 정의
     function createBoard() {
@@ -31,7 +31,7 @@ function ListBoardComponent(props) {
             <h2 className="text-center">Boards List</h2>
             
             <div className ="row">
-                <a onClick={()=>createBoard()} className="btn btn-primary">글 작성</a>
+                <button onClick={()=>createBoard()} className="btn btn-primary">글 작성</button>
             </div>
 
             <div className ="row">
