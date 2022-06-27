@@ -43,7 +43,7 @@ function ListBoardComponent(props) {
     function viewPaging() {
         const pageNums = [];
 
-        for (let i = this.state.paging.pageNumStart; i <= this.state.paging.pageNumEnd; i++ ) {
+        for (let i = paging.pageNumStart; i <= paging.pageNumEnd; i++ ) {
             pageNums.push(i);
         }
 
@@ -76,7 +76,7 @@ function ListBoardComponent(props) {
     }
 
     function isMoveToFirstPage() {
-        if (this.state.p_num != 1) {
+        if (pNum != 1) {
             return (
                 <li className="page-item">
                     <a className="page-link" onClick = {() => listBoard(1)} tabIndex="-1">Move to First Page</a>
@@ -89,7 +89,7 @@ function ListBoardComponent(props) {
         if (pNum != paging.pageNumCountTotal) {
             return (
                 <li className="page-item">
-                    <a className="page-link" onClick = {() => listBoard( (paging.pageNumCountTotal) )} tabIndex="-1">LastPage({this.state.paging.pageNumCountTotal})</a>
+                    <a className="page-link" onClick = {() => listBoard( (paging.pageNumCountTotal) )} tabIndex="-1">LastPage({paging.pageNumCountTotal})</a>
                 </li>
             );
         }
