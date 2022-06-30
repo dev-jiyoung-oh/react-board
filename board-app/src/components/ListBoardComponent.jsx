@@ -4,7 +4,7 @@ import BoardService from '../service/BoardService';
 
 function ListBoardComponent(props) {
     const navigate = useNavigate();
-    const pageNumCountPerPage = 5; // 한 화면에 출력할 페이지 번호 수
+    const pagePerPage = 5; // 한 화면에 출력할 페이지 번호 수
     const [boards, setBoards] = useState([]);
     const [pNum, setPNum] = useState(0);
     const [paging, setPaging] = useState({});
@@ -12,24 +12,7 @@ function ListBoardComponent(props) {
     // 리액트의 생명주기 메소드인 'componentDidMount'에서 'BoardService'의 메소드를 호출해서 데이터를 가져온다.
     // ★this.state에 선언한 변수의 값을 변경하기 위해선 setState를 사용해야함.
     useEffect (() => {
-        BoardService.getBoards(pNum).then((res) => {
-            console.log(res.data);
- 
-            var currentPageNum = res.data.number;
-            var total = res.data.totalPages;
-            var startAndEndNum = setCalcForPaging(currentPageNum, total);
-
-            setPNum(currentPageNum+1);
-            setPaging({
-                total : total,
-                size : res.data.size,
-                prev : !res.data.first,
-                next : !res.data.last,
-                pageNumStart : startAndEndNum.start,
-                pageNumEnd : startAndEndNum.end
-            });
-            setBoards(res.data.content);
-        });
+        listBoard(pNum);
     }, []);
 
     // 글 작성 버튼을 클릭시 글작성 페이지로 이동하게 해주는 함수를 정의
@@ -43,71 +26,48 @@ function ListBoardComponent(props) {
     }
 
     // 리스트 페이징 처리
-    function listBoard(pNum) {
-        console.log('pNum: '+pNum);
-        BoardService.getBoards(pNum).then((res) => {
+    function listBoard(pageNum) {
+        console.log('pageNum: '+pageNum);
+        BoardService.getBoards(pageNum).then((res) => {
             console.log(res.data);
  
-            var currentPageNum = res.data.number;
-            var total = res.data.totalPages;
-            var startAndEndNum = setCalcForPaging(currentPageNum, total);
+            var currentPage = res.data.number;
+            var totalPage = res.data.totalPages;
+            var lastPage = (currentPage + pagePerPage > totalPage) ? totalPage : currentPage + pagePerPage;
+            var firstPage = (lastPage - (pagePerPage - 1) <= 0) ? 1 : lastPage - (pagePerPage - 1);
 
-            setPNum(currentPageNum);
+            setPNum(currentPage);
             setPaging({
-                total : total,
+                totalPage : totalPage,
                 size : res.data.size,
                 prev : !res.data.first,
                 next : !res.data.last,
-                pageNumStart : startAndEndNum.start,
-                pageNumEnd : startAndEndNum.end
+                firstPage : firstPage,
+                lastPage : lastPage
             });
             setBoards(res.data.content);
         });
     }
 
-    function setCalcForPaging(currentPageNum, pageNumCountTotal) {
-        var tmpPageNumStart = (Math.ceil(currentPageNum+1 / pageNumCountPerPage) * pageNumCountPerPage);
-        var tmpPageNumEnd = 0;
-        var pageNumStart = 0;
-        var pageNumEnd = 0;
-                
-        if (tmpPageNumStart == 0) {
-            pageNumStart = 1;
-            tmpPageNumEnd = tmpPageNumStart + pageNumCountPerPage;		
-        } else if (tmpPageNumStart == currentPageNum) {
-            pageNumStart = tmpPageNumStart - (pageNumCountPerPage - 1);
-            tmpPageNumEnd = currentPageNum;
-        } else {
-            pageNumStart = tmpPageNumStart + 1;
-            tmpPageNumEnd = pageNumStart + pageNumCountPerPage;
-        }
-        pageNumEnd = (pageNumCountTotal < tmpPageNumEnd) ? pageNumCountTotal : tmpPageNumEnd;
-        
-        return {
-            start: pageNumStart,
-            end: pageNumEnd
-        };
-    }
-
     function viewPaging() {
         const pageNums = [];
-
-        for (let i = paging.pageNumStart; i <= paging.pageNumEnd; i++ ) {
+        console.log(paging.firstPage, paging.lastPage)
+        for (let i = paging.firstPage; i <= paging.lastPage; i++ ) {
             pageNums.push(i);
         }
 
         return (pageNums.map((page) => {
             console.log(page, pNum)
-            if (page === pNum+1) {
+            if (page-1 === pNum) {
                 return (
                     <li className="page-item" key={page.toString()} >
-                        <a className="page-link btn btn-primary" onClick = {() => this.listBoard(page-1)}>{page}</a>
+                        <a className="btn btn-primary" onClick = {() => listBoard(page-1)}>{page}</a>
                     </li>
                 );
             } else {
                 return (
                     <li className="page-item" key={page.toString()} >
-                        <a className="page-link" onClick = {() => this.listBoard(page-1)}>{page}</a>
+                        <a className="page-link" onClick = {() => listBoard(page-1)}>{page}</a>
                     </li>
                 );
             }
@@ -146,10 +106,10 @@ function ListBoardComponent(props) {
     }
 
     function isMoveToLastPage() {
-        if (pNum != paging.total-1) {
+        if (pNum != paging.totalPage-1) {
             return (
                 <li className="page-item">
-                    <a className="page-link" onClick = {() => listBoard( (paging.total-1) )} tabIndex="-1">》</a>
+                    <a className="page-link" onClick = {() => listBoard( (paging.totalPage-1) )} tabIndex="-1">》</a>
                 </li>
             );
         }
@@ -199,9 +159,11 @@ function ListBoardComponent(props) {
             <div className ="row">
                     <nav aria-label="Page navigation example">
                         <ul className="pagination justify-content-center">
+                            {isMoveToFirstPage()}
                             {isPagingPrev()}
                             {viewPaging()}
                             {isPagingNext()}
+                            {isMoveToLastPage()}
                         </ul>
                     </nav>
                 </div>
